@@ -5,7 +5,7 @@ public class EX06_3 {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		int a[] = {1,3,5,7,9};
-		int b[];//¸Þ¸ð¸® ÇÒ´çÇØÁÙ ÇÊ¿ä ¾ø´Ù.
+		int b[];//ë©”ëª¨ë¦¬ í• ë‹¹í•´ì¤„ í•„ìš” ì—†ë‹¤.
 		int i;
 		
 		b = a;
@@ -15,3 +15,4 @@ public class EX06_3 {
 	}
 
 }
+//test

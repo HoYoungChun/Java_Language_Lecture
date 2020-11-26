@@ -20,16 +20,17 @@ public class EX20_1 {
 			if(!map.containsKey(id)) {
 				System.out.println("id does not exist.");
 				continue;
-			} else {
-				if(!(map.get(id)).equals(password)) {
+			}
+			else {
+				if(!(map.get(id)).equals(password)){
 					System.out.println("password does not match.");
-				} else {
-					System.out.println("welcome.");
+				}
+				else {
+					System.out.println("Welcome.");
 					break;
 				}
 			}
 		}
 		s.close();
-
 	}
 }

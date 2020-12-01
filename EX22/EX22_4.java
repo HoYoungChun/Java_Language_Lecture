@@ -23,6 +23,7 @@ public class EX22_4 {
 		
 		for(int i=0;i<booktitles.size();i++) {
 			System.out.println(i+1+"위: "+booktitles.eq(i).text());
+			
 		}
 	}
 }

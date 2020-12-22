@@ -138,6 +138,7 @@ class ServerReceiver extends Thread{
 			while(true) {
 				System.out.println("Client input waiting");
 				String Command = in.readUTF();
+				
 				if(Command.equals("add")) {
 					String title = in.readUTF();
 					String author = in.readUTF();
@@ -152,12 +153,12 @@ class ServerReceiver extends Thread{
 						}
 					
 		        	if(resist==1) {//같은 타이틀 존재
-		        		System.out.println("중복!");
+		        		//System.out.println("중복!");
 		        		out.writeUTF("The book already exists in the list.");
 		        	}
 		        	
 		        	else {//같은타이틀 존재 X
-		        		System.out.println("중복없음!");
+		        		//System.out.println("중복없음!");
 		        		author_borrower plus = new author_borrower(author,"-");
 		        		MapManager.map.put(title,plus);
 		        		System.out.println(MapManager.map);
@@ -165,20 +166,66 @@ class ServerReceiver extends Thread{
 		        		out.writeUTF("A new book added to the list.");
 		        	}
 				}
+				
 				else if(Command.equals("borrow")) {
-					;
+					String title = in.readUTF();
+					String ID = in.readUTF();
+					int resist=0;
+					
+					Set set = MapManager.map.keySet();
+					Iterator iterator = set.iterator();
+					while(iterator.hasNext()){
+						  String key = (String)iterator.next();
+						  if(key.toLowerCase().equals(title.toLowerCase())) {
+							  if(MapManager.map.get(key).borrower.equals("-")) {
+								  resist=1;
+								  MapManager.map.get(key).borrower=ID;
+								  title=key;
+							  }
+						  }
+					}
+					if(resist==1) {//borrow가능
+						MapManager.writeData();
+						out.writeUTF("You borrowed a book. - "+title);
+					}
+					else {//borrow불가능
+						out.writeUTF("The book is not available.");
+					}
 				}
+				
 				else if(Command.equals("return")) {
-					;
+					String title = in.readUTF();
+					String ID = in.readUTF();
+					int resist=0;
+					
+					Set set = MapManager.map.keySet();
+					Iterator iterator = set.iterator();
+					while(iterator.hasNext()){
+						  String key = (String)iterator.next();
+						  if(key.toLowerCase().equals(title.toLowerCase())) {
+							  if(MapManager.map.get(key).borrower.equals(ID)) {
+								  resist=1;
+								  MapManager.map.get(key).borrower="-";
+								  title=key;
+							  }
+						  }
+					}
+					if(resist==1) {//return가능
+						MapManager.writeData();
+						out.writeUTF("You returned a book. - "+title);
+					}
+					else {//return불가능
+						out.writeUTF("You did not borrow the book.");
+					}
 				}
+				
 				else if(Command.equals("info")) {
 					;
 				}
+				
 				else if(Command.equals("search")) {
 					;
 				}
-				
-				
 			}
 		}catch(Exception e) { e.printStackTrace();}
 	}
@@ -210,7 +257,7 @@ public class Server{
 		}
 		
 		MapManager.readData();
-		System.out.println(MapManager.map);
+		//System.out.println(MapManager.map);
 		
 		int portNum = Integer.parseInt(args[0]);
 		new Server().start(portNum);	

@@ -25,6 +25,7 @@ class ClientSender extends Thread{
 			while(true) {
 				System.out.print(ID+">> ");
 				String command= scanner.nextLine();
+				
 				if(command.equals("add")) {
 					System.out.print("add-title> ");
 					String title = scanner.nextLine();
@@ -41,11 +42,29 @@ class ClientSender extends Thread{
 					
 					System.out.println(in.readUTF());
 				}
+				
 				else if(command.equals("borrow")) {
-					System.out.println("borrow command");
+					System.out.print("borrow-title> ");
+					String title = scanner.nextLine();
+					if(title.length()==0)
+						continue;
+					out.writeUTF("borrow");
+					out.writeUTF(title);
+					out.writeUTF(ID);
+					
+					System.out.println(in.readUTF());
 				}
+				
 				else if(command.equals("return")) {
-					System.out.println("return command");
+					System.out.print("return-title> ");
+					String title = scanner.nextLine();
+					if(title.length()==0)
+						continue;
+					out.writeUTF("return");
+					out.writeUTF(title);
+					out.writeUTF(ID);
+					
+					System.out.println(in.readUTF());
 				}
 				else if(command.equals("info")) {
 					System.out.println("info command");

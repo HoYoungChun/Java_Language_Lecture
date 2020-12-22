@@ -78,7 +78,25 @@ class ClientSender extends Thread{
 				}
 				
 				else if(command.equals("search")) {
-					System.out.println("search command");
+					System.out.print("search-string> ");
+					String str = scanner.nextLine();
+					if(str.length()==0) {
+						continue;
+					}
+					
+					while(str.length()<=2) {
+						System.out.println("Search string must be longer than 2 characters.");
+						System.out.print("search-string> ");
+						str = scanner.nextLine();
+						continue;
+					}
+					out.writeUTF("search");
+					out.writeUTF(str);
+					int bnum=Integer.parseInt(in.readUTF());
+					System.out.println(in.readUTF());
+					for(int i=0; i<bnum;i++) {
+						System.out.println((i+1)+". "+in.readUTF());
+					}
 				}
 				
 				else {

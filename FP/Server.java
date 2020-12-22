@@ -244,12 +244,31 @@ class ServerReceiver extends Thread{
 							out.writeUTF(key+", "+MapManager.map.get(key).author);
 						}
 					}
-					
-					
 				}
 				
 				else if(Command.equals("search")) {
-					;
+					String sstr = in.readUTF();
+					int count=0;
+					Set set = MapManager.map.keySet();
+					Iterator iterator = set.iterator();
+					while(iterator.hasNext()){
+						  String key = (String)iterator.next();
+						  if(MapManager.map.get(key).author.toLowerCase().contains(sstr.toLowerCase()) ||key.toLowerCase().contains(sstr.toLowerCase())) {
+							  count++;
+						  }
+					}
+					
+					out.writeUTF(Integer.toString(count));//È½¼öÀü´Þ
+					out.writeUTF("Your search matched "+count+" results.");
+					
+					set = MapManager.map.keySet();
+					iterator = set.iterator();
+					while(iterator.hasNext()){
+						  String key = (String)iterator.next(); 
+						  if(MapManager.map.get(key).author.toLowerCase().contains(sstr.toLowerCase()) ||key.toLowerCase().contains(sstr.toLowerCase())) {
+							out.writeUTF(key+", "+MapManager.map.get(key).author);
+						}
+					}
 				}
 			}
 		}catch(Exception e) { e.printStackTrace();}

@@ -3,6 +3,7 @@ package cse3040_fp_20191656;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -26,9 +27,11 @@ class author_borrower{
 
 class MapManager{
 	static public Map<String, author_borrower> map = new hashMap<>();
+	static FileWriter fw;
+	static File file;
 	static public void readData(){
 		try {
-	         File file = new File("books.txt");
+	         file = new File("books.txt");
 	         Scanner scanner = new Scanner(file);
 	        while (scanner.hasNext()) {
 	        	String btitle="";
@@ -58,9 +61,28 @@ class MapManager{
 	        	author_borrower ab = new author_borrower(inauthor,borrower);
 	        	
 	        	map.put(intitle,ab);
-	        	
 	         }
 	       } catch (Exception e) { e.printStackTrace();}
+	}
+	
+	static public void writeData() {
+		try {
+		fw = new FileWriter(file,false);
+		Set<Map.Entry<String,author_borrower>> set = MapManager.map.entrySet();
+		List<Map.Entry<String,author_borrower>> list = new ArrayList<>(set);
+		Collections.sort(list, new ValueComparator<Map.Entry<String,author_borrower>>());
+		Iterator<Map.Entry<String,author_borrower>> it = list.iterator();
+		while(it.hasNext()) {
+			Map.Entry<String,author_borrower> e = (Map.Entry<String,author_borrower>)it.next();
+			String s = (e.getKey()+ "\t" +MapManager.map.get(e.getKey()).author+"\t"+MapManager.map.get(e.getKey()).borrower+"\n");
+			fw.write(s);
+			//System.out.println(s);
+			//System.out.println("write동작중");
+		}
+		fw.close();
+		
+		
+		}catch(Exception e) { e.printStackTrace();}
 	}
 }
 
@@ -136,6 +158,10 @@ class ServerReceiver extends Thread{
 		        	
 		        	else {//같은타이틀 존재 X
 		        		System.out.println("중복없음!");
+		        		author_borrower plus = new author_borrower(author,"-");
+		        		MapManager.map.put(title,plus);
+		        		System.out.println(MapManager.map);
+		        		MapManager.writeData();
 		        		out.writeUTF("A new book added to the list.");
 		        	}
 				}

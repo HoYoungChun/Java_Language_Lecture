@@ -66,12 +66,21 @@ class ClientSender extends Thread{
 					
 					System.out.println(in.readUTF());
 				}
+				
 				else if(command.equals("info")) {
-					System.out.println("info command");
+					out.writeUTF("info");
+					out.writeUTF(ID);
+					int bnum=Integer.parseInt(in.readUTF());
+					System.out.println(in.readUTF());
+					for(int i=0; i<bnum;i++) {
+						System.out.println((i+1)+". "+in.readUTF());
+					}
 				}
+				
 				else if(command.equals("search")) {
 					System.out.println("search command");
 				}
+				
 				else {
 					System.out.println("[available commands]");
 					System.out.println("add: add a new book to the list of books.");
@@ -80,6 +89,7 @@ class ClientSender extends Thread{
 					System.out.println("info: show list of books I am currently borrowing.");
 					System.out.println("search: s earch for books.");
 				}
+				
 			}
 		}catch(Exception e) { e.printStackTrace();}
 		

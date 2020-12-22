@@ -220,7 +220,32 @@ class ServerReceiver extends Thread{
 				}
 				
 				else if(Command.equals("info")) {
-					;
+					String ID = in.readUTF();
+					int count=0;
+					Set set = MapManager.map.keySet();
+					Iterator iterator = set.iterator();
+					while(iterator.hasNext()){
+						  String key = (String)iterator.next();
+						  if(MapManager.map.get(key).borrower.equals(ID)) {
+							  count++;
+						  }
+					}
+					out.writeUTF(Integer.toString(count));//È½¼öÀü´Þ
+					if(count==0)
+						out.writeUTF("You are currently borrowing "+count+" books.");
+					else
+						out.writeUTF("You are currently borrowing "+count+" books:");
+					
+					set = MapManager.map.keySet();
+					iterator = set.iterator();
+					while(iterator.hasNext()){
+						  String key = (String)iterator.next(); 
+						  if(MapManager.map.get(key).borrower.equals(ID)) {
+							out.writeUTF(key+", "+MapManager.map.get(key).author);
+						}
+					}
+					
+					
 				}
 				
 				else if(Command.equals("search")) {

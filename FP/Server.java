@@ -62,7 +62,7 @@ class MapManager{
 	        	
 	        	map.put(intitle,ab);
 	         }
-	       } catch (Exception e) { e.printStackTrace();}
+	       } catch (Exception e) { }
 	}
 	
 	static public void writeData() {
@@ -82,7 +82,7 @@ class MapManager{
 		fw.close();
 		
 		
-		}catch(Exception e) { e.printStackTrace();}
+		}catch(Exception e) { }
 	}
 }
 
@@ -130,13 +130,13 @@ class ServerReceiver extends Thread{
 		try {
 			in = new DataInputStream(socket.getInputStream());
 			out = new DataOutputStream(socket.getOutputStream());
-		}catch(Exception e) { e.printStackTrace();}
+		}catch(Exception e) { }
 	}
 	
 	public void run() {
 		try {
 			while(true) {
-				System.out.println("Client input waiting");
+				//System.out.println("Client input waiting");
 				String Command = in.readUTF();
 				
 				if(Command.equals("add")) {
@@ -161,7 +161,7 @@ class ServerReceiver extends Thread{
 		        		//System.out.println("중복없음!");
 		        		author_borrower plus = new author_borrower(author,"-");
 		        		MapManager.map.put(title,plus);
-		        		System.out.println(MapManager.map);
+		        		//System.out.println(MapManager.map);
 		        		MapManager.writeData();
 		        		out.writeUTF("A new book added to the list.");
 		        	}
@@ -222,24 +222,23 @@ class ServerReceiver extends Thread{
 				else if(Command.equals("info")) {
 					String ID = in.readUTF();
 					int count=0;
-					Set set = MapManager.map.keySet();
-					Iterator iterator = set.iterator();
-					while(iterator.hasNext()){
-						  String key = (String)iterator.next();
+					
+					Set<Map.Entry<String,author_borrower>> set =  MapManager.map.entrySet();
+					List<Map.Entry<String,author_borrower>> list = new ArrayList<>(set);
+					Collections.sort(list, new ValueComparator<Map.Entry<String,author_borrower>>());
+					Iterator<Map.Entry<String,author_borrower>> it = list.iterator();
+					while(it.hasNext()){
+						  String key = it.next().getKey();
 						  if(MapManager.map.get(key).borrower.equals(ID)) {
 							  count++;
 						  }
 					}
 					out.writeUTF(Integer.toString(count));//횟수전달
-					if(count==0)
-						out.writeUTF("You are currently borrowing "+count+" books.");
-					else
-						out.writeUTF("You are currently borrowing "+count+" books:");
+					out.writeUTF("You are currently borrowing "+count+" books:");
 					
-					set = MapManager.map.keySet();
-					iterator = set.iterator();
-					while(iterator.hasNext()){
-						  String key = (String)iterator.next(); 
+					it = list.iterator();
+					while(it.hasNext()){
+						  String key = it.next().getKey(); 
 						  if(MapManager.map.get(key).borrower.equals(ID)) {
 							out.writeUTF(key+", "+MapManager.map.get(key).author);
 						}
@@ -249,10 +248,12 @@ class ServerReceiver extends Thread{
 				else if(Command.equals("search")) {
 					String sstr = in.readUTF();
 					int count=0;
-					Set set = MapManager.map.keySet();
-					Iterator iterator = set.iterator();
-					while(iterator.hasNext()){
-						  String key = (String)iterator.next();
+					Set<Map.Entry<String,author_borrower>> set =  MapManager.map.entrySet();
+					List<Map.Entry<String,author_borrower>> list = new ArrayList<>(set);
+					Collections.sort(list, new ValueComparator<Map.Entry<String,author_borrower>>());
+					Iterator<Map.Entry<String,author_borrower>> it = list.iterator();
+					while(it.hasNext()){
+						  String key = it.next().getKey();
 						  if(MapManager.map.get(key).author.toLowerCase().contains(sstr.toLowerCase()) ||key.toLowerCase().contains(sstr.toLowerCase())) {
 							  count++;
 						  }
@@ -261,17 +262,16 @@ class ServerReceiver extends Thread{
 					out.writeUTF(Integer.toString(count));//횟수전달
 					out.writeUTF("Your search matched "+count+" results.");
 					
-					set = MapManager.map.keySet();
-					iterator = set.iterator();
-					while(iterator.hasNext()){
-						  String key = (String)iterator.next(); 
+					it = list.iterator();
+					while(it.hasNext()){
+						  String key = it.next().getKey(); 
 						  if(MapManager.map.get(key).author.toLowerCase().contains(sstr.toLowerCase()) ||key.toLowerCase().contains(sstr.toLowerCase())) {
 							out.writeUTF(key+", "+MapManager.map.get(key).author);
 						}
 					}
 				}
 			}
-		}catch(Exception e) { e.printStackTrace();}
+		}catch(Exception e) { }
 	}
 	
 }
@@ -284,13 +284,11 @@ public class Server{
 			serverSocket = new ServerSocket(PortNum);
 			while(true) {
 				socket = serverSocket.accept();
-				System.out.println("Client accept");
+				//System.out.println("Client accept");
 				ServerReceiver thread = new ServerReceiver(socket);
 				thread.start();
 			}
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
+		}catch(Exception e) {}
 	}
 	
 	

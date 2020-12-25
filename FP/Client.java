@@ -1,4 +1,4 @@
-package cse3040_fp_20191656;
+package cse3040_fp_20191656_2;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -16,7 +16,7 @@ class ClientSender extends Thread{
 			out=new DataOutputStream(socket.getOutputStream());
 			in = new DataInputStream(socket.getInputStream());
 			this.ID=ID;
-		}catch(Exception e) { e.printStackTrace();}
+		}catch(Exception e) {}
 	}
 	
 	public void run() {
@@ -109,7 +109,7 @@ class ClientSender extends Thread{
 				}
 				
 			}
-		}catch(Exception e) { e.printStackTrace();}
+		}catch(Exception e) { }
 		
 	}
 }
